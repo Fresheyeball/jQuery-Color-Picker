@@ -3,13 +3,15 @@
  * ---------------------------
  * Owner:     jquery.webspirited.com
  * Developer: Matthew Hailwood
+ * Slight Edit: Isaac Shapira
  * ---------------------------
  *
  * CHANGELOG:
  * ---------------------------
- * 1.1
+ * 1.2
  * Fixed bug 01
  * Fixed bug 02
+ * Feature   03
  *
  * ---------------------------
  * Bug Fix Credits:
@@ -21,7 +23,12 @@
  * * Number: 02
  * * Bug: Selects Change event should be called on color pick
  * * Name: Bob Farrell <unknown>
+ * --
+ * * Number: 03
+ * * New Minor Feature: 2 way communication from select box, change in select box updates picker
+ * * Name: Isaac Shapira
  */
+
 (function($) {
     $.fn.extend({
         colorpicker: function(options) {
@@ -91,9 +98,8 @@
                     var top = offset.top;
                     var left = offset.left + $(this).width() + 5;
                     $(picker).css({
-                        'top': top,
-                        'left': left
-                    }).fadeIn('slow');
+                        'top': top
+                    }).fadeIn(250);
                 });
             }
 
@@ -113,12 +119,17 @@
                     info.text('#' + $(this).attr('rel'));
                     $(obj).val($(this).attr('rel'));
                     $(obj).change();
-                    picker.children('.colorpicker-picker-span.active').removeClass('active');
-                    $(this).addClass('active');
-                    trigger.css('background-color', $(this).css('background-color'));
+                    picker.fadeOut('slow');
                 });
                 $(obj).after(picker);
+                $(obj).change(function(){
+                    info.text('#' + $(this).val());
+                    picker.children('.colorpicker-picker-span.active').removeClass('active');
+                    $('span[rel="' + $(this).val() + '"]').addClass('active');
+                    trigger.css('background-color', '#'+$(obj).children(":selected").text());
+                });
             }
+
         }
     });
 })(jQuery);
